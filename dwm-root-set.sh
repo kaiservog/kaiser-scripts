@@ -11,7 +11,9 @@ cpu(){
 	read cpu a b c idle rest < /proc/stat
 	total=$((a+b+c+idle))
 	cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
-	echo -e "💻 $cpu%"
+	cpu_temp=`sensors | grep -oP "Package id 0:\s*\+\K(\d*\.\d.C)"`
+
+	echo -e "💻 $cpu% [$cpu_temp]"
 }
 
 mem(){
@@ -21,24 +23,11 @@ mem(){
 
 btc() {
 	saida=`curl -s https://www.mercadobitcoin.net/api/BTC/ticker | jq -r '.ticker.sell' | cut -d . -f 1`
-	echo -e "₿$saida"
+	echo -e "₿ $saida"
 }
 
-URL=xxx
-TOKEN=xxx
-
 batt() {
-	saida=`curl -s -w "|%{http_code}" -H "Authorization: $TOKEN" $URL`
-	estado=`echo $saida | rev | cut --complement -c 4- | rev`
-
-	if [ $estado -eq 200 ]
-	then
-		msg=`echo $saida | rev | cut -c 5- | rev`
-		msg=`echo $msg | grep -Eo '[0-9]{1,4}'`
-		echo "$msg" > /tmp/batt.log
-	else
-		msg=`cat /tmp/batt.log`
-	fi
+	msg=`cat /tmp/batt.log`
 	echo -e "cel: $msg%"
 }
 
@@ -47,7 +36,7 @@ BTC=$(btc)
 
 while true; do
 	LOOPS=$((LOOPS+1))
-	xsetroot -name "$(batt) | $BTC | $(cpu) | $(mem) | $(dte)"
+	xsetroot -name " $(batt) | $BTC | $(cpu) | $(mem) | $(dte)"
 	sleep 10s
 
 	if [ LOOPS=60 ]
