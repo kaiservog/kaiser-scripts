@@ -11,7 +11,7 @@ cpu(){
 	read cpu a b c idle rest < /proc/stat
 	total=$((a+b+c+idle))
 	cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
-	cpu_temp=`sensors | grep -oP "Package id 0:\s*\+\K(\d*\.\d.C)"`
+	cpu_temp=`sensors | awk '/^Package/ {print $4}'`
 
 	echo -e "💻 $cpu% [$cpu_temp]"
 }
