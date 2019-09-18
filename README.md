@@ -1,6 +1,8 @@
 # kaiser-scripts
 Random scripts
 
+# dwm-root
+	my dmenu bar 
 
 # Whats.sh
 	send a whatsapp message (needs to use WA Proxy) $1 = message $2 = Sao Paulo Number
